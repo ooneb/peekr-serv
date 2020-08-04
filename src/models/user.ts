@@ -1,18 +1,39 @@
+import { Model, DataTypes } from 'sequelize'
+import { sequelize } from '../db'
+
 export interface User {
-  id: number
+  id?: number
   email: string
-  favs: Array<string>
+  favs: string
 }
 
-export const users = new Array<User>(
+export class UserModel extends Model {
+  public id!: number
+  public email!: string
+  public favs?: string
+  public readonly createdAt!: Date
+  public readonly updatedAt!: Date
+}
+
+UserModel.init(
   {
-    id: 1,
-    email: 'ben@b.com',
-    favs: ['hooo', 'haaa', 'hiii'],
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    email: {
+      type: new DataTypes.STRING(256),
+      allowNull: false,
+      unique: true,
+    },
+    favs: {
+      type: new DataTypes.STRING(),
+      allowNull: true,
+    },
   },
   {
-    id: 2,
-    email: 'weab@oo.kr',
-    favs: ['dbz', 'onepiece'],
+    tableName: 'users',
+    sequelize: sequelize, // this bit is important
   }
 )

@@ -31,10 +31,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // POST users/
 router.post('/', async (req: Request, res: Response) => {
   try {
-    console.log(req.body)
-
     const user: User = {
-      id: parseInt(req.body.id),
       email: req.body.email,
       favs: req.body.favs,
     }
@@ -43,6 +40,7 @@ router.post('/', async (req: Request, res: Response) => {
 
     res.sendStatus(201)
   } catch (e) {
+    console.error(e)
     res.status(404).send(e.message)
   }
 })

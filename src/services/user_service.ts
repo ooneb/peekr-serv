@@ -1,36 +1,33 @@
-import { User, users } from '../models/user'
+import { User, UserModel } from '../models/user'
 
 export const findAll = async (): Promise<Array<User>> => {
+  const users: Array<UserModel> = await UserModel.findAll<UserModel>()
   return users
 }
 
 export const find = async (id: number): Promise<User> => {
-  const user: User | undefined = users.find((e: User) => e.id === id)
+  const user: UserModel | null = await UserModel.findByPk<UserModel>(id)
   if (!user) throw new Error('User not found')
 
   return user
 }
 
 export const create = async (newUser: User): Promise<void> => {
-  users.push(newUser)
+  console.log({ ...newUser })
+
+  await UserModel.create<UserModel>({ ...newUser })
 }
 
 export const update = async (updatedUser: User): Promise<void> => {
-  const user: User | undefined = users.find(
-    (e: User) => e.id === updatedUser.id
-  )
-  if (!user) throw new Error('User not found')
+  const [nb]: [number, UserModel[]] = await UserModel.update(updatedUser, {
+    where: { id: updatedUser.id },
+    limit: 1,
+  })
 
-  user.email = updatedUser.email
-  user.favs = updatedUser.favs
+  if (nb <= 0) throw new Error('User not found')
 }
 
 export const remove = async (id: number): Promise<void> => {
-  const userIdx: number = users.findIndex((e: User) => e.id === id)
-  if (userIdx < 0) throw new Error('User not found')
-
-  if (userIdx) {
-    users.splice(userIdx, 1)
-    return
-  }
+  const nb: number = await UserModel.destroy({ where: { id: id } })
+  if (nb <= 0) throw new Error('User not found')
 }
