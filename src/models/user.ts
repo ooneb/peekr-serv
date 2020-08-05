@@ -1,13 +1,15 @@
 import { Model, DataTypes } from 'sequelize'
 import { sequelize } from '../db'
 
+import { BlogListModel } from './blog_list'
+
 export interface User {
   id?: number
   email: string
-  favs: string
+  favs?: string
 }
 
-export class UserModel extends Model {
+export class UserModel extends Model implements User {
   public id!: number
   public email!: string
   public favs?: string
@@ -37,3 +39,6 @@ UserModel.init(
     sequelize: sequelize, // this bit is important
   }
 )
+
+UserModel.hasMany(BlogListModel, { foreignKey: 'user_id', onDelete: 'CASCADE' })
+// BlogListModel.belongsTo(UserModel)
