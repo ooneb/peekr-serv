@@ -19,6 +19,7 @@ export const update = async (updatedUser: User): Promise<void> => {
   const user: User | undefined = users.find(
     (e: User) => e.id === updatedUser.id
   )
+
   if (!user) throw new Error('User not found')
 
   user.email = updatedUser.email

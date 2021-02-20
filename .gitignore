@@ -1,3 +1,15 @@
+# Yarn
+.yarn/*
+#!.yarn/cache
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# Optional npm cache directory
+.npm
+
+
 # Logs
 logs
 *.log
@@ -46,9 +58,6 @@ typings/
 
 # TypeScript cache
 *.tsbuildinfo
-
-# Optional npm cache directory
-.npm
 
 # Optional eslint cache
 .eslintcache
