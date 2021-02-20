@@ -5,7 +5,10 @@ export const findAll = async (): Promise<Array<User>> => {
 }
 
 export const find = async (id: number): Promise<User> => {
-  return users[id]
+  const user: User | undefined = users.find((e: User) => e.id === id)
+  if (!user) throw new Error('User not found')
+
+  return user
 }
 
 export const create = async (newUser: User): Promise<void> => {
@@ -13,18 +16,22 @@ export const create = async (newUser: User): Promise<void> => {
 }
 
 export const update = async (updatedUser: User): Promise<void> => {
-  const user: User = users[updatedUser.id]
+  const user: User | undefined = users.find(
+    (e: User) => e.id === updatedUser.id
+  )
+
+  if (!user) throw new Error('User not found')
+
   user.email = updatedUser.email
   user.favs = updatedUser.favs
 }
 
 export const remove = async (id: number): Promise<void> => {
-  const record: User = users[id]
+  const userIdx: number = users.findIndex((e: User) => e.id === id)
+  if (userIdx < 0) throw new Error('User not found')
 
-  if (record) {
-    delete users[id]
+  if (userIdx) {
+    users.splice(userIdx, 1)
     return
   }
-
-  throw new Error('No record found to delete')
 }

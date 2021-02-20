@@ -31,7 +31,13 @@ router.get('/:id', async (req: Request, res: Response) => {
 // POST users/
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const user: User = req.body.user
+    console.log(req.body)
+
+    const user: User = {
+      id: parseInt(req.body.id),
+      email: req.body.email,
+      favs: req.body.favs,
+    }
 
     await UserService.create(user)
 
@@ -44,7 +50,11 @@ router.post('/', async (req: Request, res: Response) => {
 // PUT users/
 router.put('/', async (req: Request, res: Response) => {
   try {
-    const user: User = req.body.item
+    const user: User = {
+      id: parseInt(req.body.id),
+      email: req.body.email,
+      favs: req.body.favs,
+    }
 
     await UserService.update(user)
 
