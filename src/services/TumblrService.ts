@@ -1,42 +1,31 @@
-import { doesNotMatch } from 'assert'
-import passport from 'passport'
-import { OAuthStrategy } from 'passport-oauth'
+import Tumblr, { TumblrClient } from '../lib/tumblr';
+import passport from 'passport';
+import { OAuthStrategy } from 'passport-oauth';
 
-import CONFIG from '../config'
+import CONFIG from '../config';
 
 export const TumblrService = {
   initAuth: (): void => {
-    passport.serializeUser(
-      (
-        user: unknown,
-        done: (err: Error | string | null, id?: unknown) => void
-      ) => {
-        console.log('serializeUser: ', user)
+    passport.serializeUser((user: unknown, done: (err: Error | string | null, id?: unknown) => void) => {
+      console.log('serializeUser: ', user);
 
-        done(null, '1')
-      }
-    )
+      done(null, '1');
+    });
 
     passport.deserializeUser(
-      (
-        id: string,
-        done: (
-          err: Error | string | null,
-          user?: false | Express.User | null
-        ) => void
-      ) => {
-        console.log('deserializeUser: ' + id)
-        done(null, { id })
+      (id: string, done: (err: Error | string | null, user?: false | Express.User | null) => void) => {
+        console.log('deserializeUser: ' + id);
+        done(null, { id });
       }
-    )
+    );
 
     passport.use(
       'tumblr',
       new OAuthStrategy(
         {
-          requestTokenURL: CONFIG.tumblr.tumblr_oauth_request,
-          accessTokenURL: CONFIG.tumblr.tumblr_oauth_token,
-          userAuthorizationURL: CONFIG.tumblr.tumblr_oauth_auth,
+          requestTokenURL: CONFIG.tumblr.oauth_request,
+          accessTokenURL: CONFIG.tumblr.oauth_token,
+          userAuthorizationURL: CONFIG.tumblr.oauth_auth,
           consumerKey: CONFIG.tumblr.consumer_key,
           consumerSecret: CONFIG.tumblr.consumer_secret,
           callbackURL: CONFIG.tumblr.oauth_callback,
@@ -47,28 +36,32 @@ export const TumblrService = {
           profile: unknown,
           done: (err: Error | string | null, user?: unknown) => void
         ) {
-          console.log('profile', profile)
+          console.log('profile', profile);
           if (profile) {
-            done(null, profile)
+            done(null, profile);
           } else {
-            done('err profile')
+            done('err profile');
           }
         }
       )
-    )
+    );
   },
 
-  requestToken: async (): Promise<void> => {
-    console.log('res')
-    console.log(CONFIG)
-  },
+  getUserInfo: async (token: string, tokenSecret: string): Promise<unknown> => {
+    const client: TumblrClient = Tumblr.createClient({
+      credentials: {
+        consumer_key: CONFIG.tumblr.consumer_key,
+        consumer_secret: CONFIG.tumblr.consumer_secret,
+        token: token,
+        token_secret: tokenSecret,
+      },
+      returnPromises: true,
+    });
+    console.log(client);
 
-  //   auth: (): void => {
-  //     const client: TumblrClient = Tumblr.createClient({
-  //       consumer_key: CONFIG.tumblr.oauthKey,
-  //       consumer_secret: CONFIG.tumblr.secretKey,
-  //       token: '<oauth token>',
-  //       token_secret: '<oauth token secret>',
-  //     })
-  //   },
-}
+    const user = await client.userInfo();
+    console.log(user);
+
+    return user;
+  },
+};
