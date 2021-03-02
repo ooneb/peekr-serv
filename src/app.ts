@@ -22,7 +22,7 @@ app.use(
   })
 );
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 
 TumblrService.initAuth();
@@ -30,18 +30,17 @@ TumblrService.initAuth();
 // app.use('/users', UserRoutes);
 
 app.get('/', async (req: Request, res: Response) => {
-  const userInfo: unknown = await TumblrService.getUserInfo('lol', 'kikoo');
   res.json('kikoolol');
 });
-app.get('/tumblr/auth', passport.authenticate('tumblr'));
+
+app.get('/tumblr/auth', passport.authenticate('tumblr', { session: false }));
 
 app.get(
   '/tumblr/oauth_cb',
   passport.authenticate('tumblr', { failureRedirect: '/' }),
   (req: Request, res: Response) => {
-    console.log('oatuh_cb success');
-
-    res.json('wouuh');
+    console.log('oauth_cb success');
+    res.json(req.user);
   }
 );
 
