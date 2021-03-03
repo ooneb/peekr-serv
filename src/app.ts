@@ -30,6 +30,8 @@ TumblrService.initAuth();
 // app.use('/users', UserRoutes);
 
 app.get('/', async (req: Request, res: Response) => {
+  console.log(req.user);
+
   res.json('kikoolol');
 });
 
@@ -37,11 +39,11 @@ app.get('/tumblr/auth', passport.authenticate('tumblr', { session: false }));
 
 app.get(
   '/tumblr/oauth_cb',
-  passport.authenticate('tumblr', { failureRedirect: '/' }),
-  (req: Request, res: Response) => {
-    console.log('oauth_cb success');
-    res.json(req.user);
-  }
+  passport.authenticate('tumblr', { successRedirect: '/', failureRedirect: '/' })
+  // (req: Request, res: Response) => {
+  //   console.log('oauth_cb success');
+  //   res.json(req.user);
+  // }
 );
 
 app.use((req: Request, res: Response) => res.status(404).json({ message: 'nothing here' })); // Catch unhandled routes

@@ -5,6 +5,9 @@
   "repository": "https://github.com/ooneb/peekr-serv.git",
   "author": "Ben B. <boucher.bn@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "15.x"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
